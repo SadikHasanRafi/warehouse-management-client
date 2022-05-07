@@ -24,7 +24,7 @@ async function mongoServer() {
             const productCollection = client.db("inventoryProduct").collection("products");
             
             
-            //add data into database
+            //insert data in database
             app.post('/addproduct',async (req,res)=>{
     
                 const newProduct = req.body;
