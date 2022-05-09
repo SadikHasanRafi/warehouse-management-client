@@ -1,6 +1,8 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
+const ObjectId = require('mongodb').ObjectId
+
 require('dotenv').config();
 const port = process.env.port || 5000;
 const app = express();
@@ -28,15 +30,16 @@ async function addNewProduct(product) {
 app.post('/addproduct', (req,res)=>{
     const newProduct = req.body;
     addNewProduct(newProduct).catch(console.dir)
-    res.send({succes:'data successfully found'})
+    res.send({succes:true})
 })
+//___________________________________________________________________________
 
-
-//show all product
-async function showAllProducts () {
+//show product
+async function getProducts () {
   try{
       await client.connect();
-      const cursor = productCollection.find({})
+      
+      const cursor = productCollection.find()
       const products =await cursor.toArray()
       return products
   }
@@ -44,11 +47,59 @@ async function showAllProducts () {
       await client.close();
   }
 }
-app.get('/names', async(req,res) => {
-  const products = await showAllProducts().catch(console.dir)
+app.get('/showproduct', async(req,res) => {
+  
+  const products = await getProducts().catch(console.dir)
   res.send(products)
 })
+//____________________________________________________________________________
 
+
+//show one product's details 
+async function getOneProduct (id){
+  try{
+    await client.connect();
+    const search = {_id:ObjectId(id)}
+    const product = await productCollection.findOne(search)
+    return product
+  }
+  finally{
+    await client.close();
+  }
+}
+app.get('/showproductdetails/:id', async (req,res) => {
+  
+  const id = req.params.id
+  const result = await getOneProduct(id).catch(console.dir)
+  
+  res.send(result)
+})
+//___________________________________________________________________________
+
+
+//Update product
+async function updateOneProduct(id,updateProduct){
+  try {
+    await client.connect();
+    const option = { upsert: true }
+    const updatedDoc = {
+      $set: {
+        quantity:updateProduct.quantity
+      }
+    }
+    const result = await productCollection.updateOne(id,updatedDoc,option)
+    return result
+  } finally {
+    await client.close();
+  }
+}
+app.put('/showproductdetails/:id', async (req,res) => {
+  let id = id.params.id
+  const updateProduct = req.body
+  id = { _id : ObjectId(id) }
+  const result = updateOneProduct(id,updateProduct)
+  res.send(result)
+})
 
 
 
