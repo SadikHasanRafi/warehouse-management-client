@@ -94,8 +94,9 @@ async function updateOneProduct(id,updateProduct){
   }
 }
 app.put('/showproductdetails/:id', async (req,res) => {
-  let id = id.params.id
+  let id = req.params.id
   const updateProduct = req.body
+  console.log(req.body.quantity)
   id = { _id : ObjectId(id) }
   const result = updateOneProduct(id,updateProduct)
   res.send(result)
