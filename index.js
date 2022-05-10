@@ -4,7 +4,7 @@ const cors = require('cors');
 const ObjectId = require('mongodb').ObjectId
 
 require('dotenv').config();
-const port = process.env.port || 5000;
+const port = process.env.PORT || 5000;
 const app = express();
 
 //using middleware
@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 
-const uri = "mongodb+srv://USER:PASS@cluster0.kg2k3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.kg2k3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 const productCollection = client.db("test").collection("products");
 
