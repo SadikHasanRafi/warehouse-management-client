@@ -70,8 +70,8 @@ async function getOneProduct (id){
 app.get('/showproductdetails/:id', async (req,res) => {
   
   const id = req.params.id
+  console.log("get -",id)
   const result = await getOneProduct(id).catch(console.dir)
-  
   res.send(result)
 })
 //___________________________________________________________________________
@@ -93,10 +93,11 @@ async function updateOneProduct(id,updateProduct){
     await client.close();
   }
 }
-app.put('/showproductdetails/:id', async (req,res) => {
+app.put('/product/:id', async (req,res) => {
   let id = req.params.id
+  console.log('response - ',req.body)
   const updateProduct = req.body
-  console.log(req.body.quantity)
+  console.log("put -", req.params.id)
   id = { _id : ObjectId(id) }
   const result = updateOneProduct(id,updateProduct)
   res.send(result)
